@@ -1,3 +1,4 @@
+(Нельзя мутировать state напрямую,можно только через setState и вернуть измененную копию старго state)
 1)Delete element:
     state = {
         list: [
