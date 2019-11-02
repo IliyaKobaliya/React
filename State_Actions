@@ -1,5 +1,4 @@
 (Нельзя мутировать state напрямую,можно только через setState и вернуть измененную копию старго state)
-1)Delete element:
     state = {
         list: [
             {title:`item1`,id:1},
@@ -7,13 +6,32 @@
             {title:`item3`,id:3},
         ]
     };
-   
-   const {list} = this.state;
-   
+    
+      const {list} = this.state;
+            lastId = list[list.length - 1].id;(lastId это свойство класса,не переменная).
+            
+            
+1)Delete element:   
    deleteItem = (id) => {
         const index = list.findIndex(item => item.id === id);
         const newState = [
             ...list.slice(0, index),
             ...list.slice(index + 1)
         ]
+    };
+2)Create new element:
+    createElement = () => {
+        const newElement = title => ({
+            title,
+            id: lastId++
+        });
+        this.setState(({list}) => {
+            const newState = [
+                ...list,
+                newElement()
+            ];
+            return {
+                list: newState;
+        }
+        })
     };
