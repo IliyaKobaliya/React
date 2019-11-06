@@ -9,11 +9,15 @@ class ApiService {
         return await res.json();
     }
 
-    getAllPeople() {
-        return this.getResource(`/people/`);
+    async getAllPeople() {
+        const res = await this.getResource(`/people/`);
+        return res.results;
     }
 
     getPerson(id) {
         return this.getResource(`/people/${id}`);
     }
 }
+
+const swapi = new ApiService();
+swapi.getAllPeople().then((people) => people.forEach(p => console.log(p)));
