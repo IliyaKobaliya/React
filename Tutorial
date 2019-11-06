@@ -1,0 +1,101 @@
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+
+class App extends Component {
+    state = {
+        searchText: ``,
+        list: [
+            {title: `item1`, active: true, id: 1},
+            {title: `item2`, active: false, id: 2},
+            {title: `item3`, active: true, id: 3},
+        ],
+        filter: `All`
+    };
+    deleteElement = (id) => {
+        this.setState(({list}) => {
+            const index = list.findIndex(item => item.id === id);
+            const newList = [
+                ...list.slice(0, index),
+                ...list.slice(index + 1)
+            ];
+            return {
+                list: newList
+            }
+        });
+    };
+
+    search = (e) => {
+        this.setState({searchText: e.target.value})
+    };
+
+    searchElement = (items, text) => {
+        if (text.length === 0) {
+            return items
+        }
+        return items.filter(({title}) => {
+            return title.toLowerCase().indexOf(text.toLowerCase()) > -1;
+        })
+    };
+    filter = (items, filter) => {
+        switch (filter) {
+            case (`All`): {
+                return items
+            }
+            case (`Active`): {
+                return items.filter(el => el.active)
+            }
+            case (`Done`): {
+                return items.filter(el => !el.active)
+            }
+            default:
+                return items
+        }
+    };
+    changeFilter = (type) => {
+        console.log(1);
+        return this.setState({filter: type});
+    };
+
+    render() {
+        const {searchText, list, filter} = this.state;
+        const visibleItems = this.filter(this.searchElement(list, searchText), filter);
+        const buttons = [
+            {
+                text: `All items`,
+                type: `All`,
+                id: 1
+            },
+            {
+                text: `Active items`,
+                type: `Active`,
+                id: 2
+            },
+            {
+                text: `Done items`,
+                type: `Done`,
+                id: 3
+            },
+        ];
+        return (
+            <>
+                {buttons.map(({text, type, id}) => {
+                    const isActive = filter === type;
+                    const color = isActive ? `blue` : `black`;
+                    return (<button key={id} style={{color: `${color}`}}
+                                    onClick={() => this.changeFilter(type)}>{text}</button>)
+                })}
+                {visibleItems.map(({title, foo, id}) =>
+                    <div key={id}>
+                        <span>{title}</span>
+                        <span onClick={() => this.deleteElement(id)}>delete</span>
+                    </div>)
+                }
+                <input onChange={this.search} type="text"/>
+            </>
+        )
+    }
+}
+
+
+ReactDOM.render(<App/>, document.getElementById('root'));
+
